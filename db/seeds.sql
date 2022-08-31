@@ -1,18 +1,41 @@
-USE company_db; 
+use company_db;
 
-INSERT INTO department (name) VALUES ('Sales'),
-INSERT INTO department (name) VALUES ('Engineering'),
-INSERT INTO department (name) VALUES ('Finance'),
-INSERT INTO department (name) VALUES ('Legal');
+ INSERT INTO departments
+    (name)
 
+VALUES
+    ('Sales'),
+    ('Engineering'),
+    ('Finance'),
+    ('Legal');
 
-INSERT INTO role (title, salary, department_id) VALUES ("Salesperson", 80000, 1), ("Lead Engineering", 1500000, 2), ("Software Engineer", 1200000, 2), ("Account 
-Manager", 1600000, 3), ("Accountant", 1250000, 3), ("Legal Team Lead", 250000, 4),("Lawyer", 1900000, 4)''
+ INSERT INTO roles
+(title, salary, departments_id)
 
+VALUES
+    ('Sales Lead', '10000', '1'),
+    ('Salesperson', '80000', '1'),
+    ('Lead Engineering', '150000', '2'),
+    ('Software Engineer', '120000', '2'),
+    ('Account Manager', '160000', '3'),
+    ('Accountant', '125000', '3'),
+    ('Legal Team Lead', '250000', '4'),
+    ('Lawyer', '190000', '4');
 
+INSERT INTO employee
+(first_name, last_name, roles_id, manager_id)
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Mike", "Chan", 1, 123) ("Ashley", "Rodriguez", 2, 124), ("Kevin", "Tupik", 2, 124), ("Kunal", "Patel", 3, 125), ("Malia", "Brown", 3, 125), ("Sara", "Smith", 4, 126), ("Tommy", "Allen", 4, 126);
+VALUES
+    ('John',  'Doe', 1, NULL),
+    ('Michael', 'Chan', 1, 3),
+    ('Ashley', 'Rains', 2, NULL),
+    ('Kevin', 'Tupik', 2, 4),
+    ('Kunal', 'Sing', 3, NULL),
+    ('Malia', 'Brown', 3, 5),
+    ('Sarah', 'Lourd', 5, NULL),
+    ('Tom', 'Allen', 5, 6);
+
+ 
 
 
 

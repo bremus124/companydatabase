@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const consoletable = require('console.table');
-const db = require('./db/connection')
+require('console.table');
+const db = require('./db/connection');
 
 const PORT = process.env.PORT || 3001;
 
@@ -16,8 +16,8 @@ const startApp = () => {
                 'View All Departments',
                 'View All Roles',
                 'View All Employees',
-                'Add Department',
-                'Add Role',
+                'Add Departments',
+                'Add Roles',
                 'Add Employee',
                 'Exit',
             ],
@@ -36,10 +36,10 @@ const startApp = () => {
             case 'View All Employees':
                 viewEmployee();
                 break;
-            case 'Add Department':
-                addDepartment();
+            case 'Add Departments':
+                addDepartments();
                 break;
-            case 'Add Role':
+            case 'Add Roles':
                 addRole();
                 break;
             case 'Add Employee':
@@ -54,7 +54,7 @@ const startApp = () => {
 
 
 const viewDepartments = () => {
-    const dataDpt = "SELECT * FROM department;"
+    const dataDpt = "SELECT departments.id, departments.name FROM departments;"
     db.query(dataDpt, (err, result) => {
         if (err) throw err;
         console.table(result);
@@ -64,18 +64,19 @@ const viewDepartments = () => {
 
 
 
-const addDepartment = ()=> {
+const addDepartments = ()=> {
     inquirer.prompt([
         {
-            name: 'department',
-            message: 'Enter the name of the department',
+            name: 'departments',
+            message: 'Enter the name of the departments',
         }
     ])
     .then(res => {
-        const addDept = "INSERT INTO department (name) VALUES (?)";
-        db.query(addDept, [res.department], (err, data) => {
+        const addDept = "INSERT INTO departments (name) VALUES (?)";
+        db.query(addDept, [res.departments], (err, data) => {
+            console.log(data);
             if (err) throw err;
-            console.log(`added ${res.department}to the database`);
+            console.log(`added ${res.departments}to the database`);
             startApp()
         });
     });
