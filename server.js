@@ -3,9 +3,6 @@ const mysql = require('mysql2');
 require('console.table');
 const db = require('./db/connection');
 
-const PORT = process.env.PORT || 3001;
-
-
 const startApp = () => {
     return inquirer.prompt([
         {
