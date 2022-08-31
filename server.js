@@ -1,7 +1,14 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 require('console.table');
-const db = require('./db/connection');
+
+const connection = mysql.createConnection (
+    {
+      host: 'localhost',
+      user: 'root',
+      password: 'NikoCody!23',
+      database: 'company_db',
+    });
 
 const startApp = () => {
     return inquirer.prompt([
@@ -21,9 +28,9 @@ const startApp = () => {
 
         },
 
-    ]).then(answer => {
+    ]).then((answer) => {
         let option = answer.option;
-        switch(option.toLowerCase()){
+        switch(option){
             case 'View All Departments':
                 viewDepartments();
                 break;
@@ -48,17 +55,35 @@ const startApp = () => {
     });
 }
 
-
-
 const viewDepartments = () => {
-    const dataDpt = "SELECT departments.id, departments.name FROM departments;"
-    db.query(dataDpt, (err, result) => {
-        if (err) throw err;
-        console.table(result);
+    const dataDpt = "SELECT departments.id, departments.departments_name FROM departments;"
+    connection.promise().query(dataDpt) 
+    .then (([rows]) => {
+        console.table(rows);
         startApp()
-    });
-}
+    }) 
+        
+    };
 
+    const viewRoles = () => {
+        const dataDpt = 'SELECT roles.id AS "ID", title AS "Title", salary AS "Salary", departments_name AS "Department Name" FROM roles INNER JOIN departments ON roles.departments_id=departments.id ORDER BY roles.id;'
+        connection.promise().query(dataDpt) 
+        .then (([rows]) => {
+            console.table(rows);
+            startApp()
+        }) 
+            
+        };
+
+     const viewEmployee = () => {
+            const dataDpt = 'SELECT employee.id AS "ID", CONCAT(employee.first_name, " ", employee.last_name) AS "Employee Name",salary AS "Salary", title AS "Title", departments.departments_name AS "Department" FROM employee INNER JOIN roles ON employee.roles_id = roles.id INNER JOIN departments ON roles.departments_id = departments.id ORDER BY employee.id;'
+            connection.promise().query(dataDpt) 
+            .then (([rows]) => {
+                console.table(rows);
+                startApp()
+            }) 
+                
+            };
 
 
 const addDepartments = ()=> {
