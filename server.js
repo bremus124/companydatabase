@@ -79,7 +79,7 @@ const viewDepartments = () => {
         };
 
      const viewEmployee = () => {
-            const dataDpt = 'SELECT employee.id AS "ID", CONCAT(employee.first_name, " ", employee.last_name) AS "Employee Name",salary AS "Salary", title AS "Title", departments.departments_name AS "Department" FROM employee INNER JOIN roles ON employee.roles_id = roles.id INNER JOIN departments ON roles.departments_id = departments.id ORDER BY employee.id;'
+            const dataDpt = 'SELECT employee.id AS "ID", CONCAT(employee.first_name, " ", employee.last_name) AS "Employee Name",salary AS "Salary", title AS "Title", departments.departments_name AS "Department",CONCAT(manager.first_name, " ", manager.last_name) AS "Manager" FROM employee INNER JOIN roles ON employee.roles_id = roles.id INNER JOIN departments ON roles.departments_id = departments.id LEFT JOIN employee manager ON manager.id = employee.manager_id ORDER BY employee.id;'
             connection.promise().query(dataDpt) 
             .then (([rows]) => {
                 console.table(rows);
@@ -120,9 +120,10 @@ function addRole() {
           name: "salaryTotal"
         },
         {
-          type: "input",
-          message: "What is the department's id number?",
-          name: "deptartmentsId"
+          type: "list",
+          message: "What is the department's name?",
+          name: "deptartmentsId",
+          choices: ['Sales', 'Engineering', 'Finance', 'Legal']
         }
       ])
       .then(function(answer) {
@@ -150,14 +151,17 @@ function addRole() {
           name: "eLastName"
         },
         {
-          type: "input",
-          message: "What is the employee's role id number?",
-          name: "rolesId"
+          type: "list",
+          message: "What is the employee's role?",
+          name: "rolesId",
+          choices: [1,2,3,NaN]
         },
         {
-          type: "input",
-          message: "What is the manager id number?",
-          name: "managerId"
+          type: "list",
+          message: "Who is the employee's manager?",
+          name: "managerId",
+          choices: [1,2,3,4,5]
+          
         }
       ])
       .then(function(answer) {
