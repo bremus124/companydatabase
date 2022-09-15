@@ -126,16 +126,33 @@ function addRole() {
           choices: ['Sales', 'Engineering', 'Finance', 'Legal']
         }
       ])
-      .then(function(answer) {
+      .then(data => {
+        switch(data.choice) {
+            case 'Sales':
+                var dptID = 1;
+            break;
+            case 'Engineering':
+                var dptID = 2;
+            break;
+            case 'Finance':
+                var dptID = 3;
+            break;
+            case 'Legal':
+                var dptID = 4;
+            break;
+          
+          };
+        })
+      .then(function(data) {
   
   
-        connection.query("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [answer.roleName, answer.salaryTotal, answer.departmentsId], function(err, res) {
+        connection.query("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [data.roleName, data.salaryTotal, dptId], function(err, res) {
           if (err) throw err;
           console.table(res);
           startApp();
         });
       });
-  }
+  };
   
   function addEmployee() {
     inquirer
@@ -154,13 +171,13 @@ function addRole() {
           type: "list",
           message: "What is the employee's role?",
           name: "rolesId",
-          choices: [1,2,3,NaN]
+          choices: ['Sales Lead', 'Salesperson', 'Lead Engineering', 'Software Engieer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer']
         },
         {
           type: "list",
           message: "Who is the employee's manager?",
           name: "managerId",
-          choices: [1,2,3,4,5]
+          choices: ['John Doe', 'Michael Chan', 'Ashley Rains', 'Kevin Tupik','Kunal Sing','Malia Brown', 'Sarah Lourd', 'Tom Allen']
           
         }
       ])
