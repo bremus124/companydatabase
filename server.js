@@ -106,23 +106,22 @@ const addDepartments = ()=> {
 })
 };
 
-function addRole() {
-    inquirer
-      .prompt([
+const addRole = () => {
+    inquirer.prompt([
         {
           type: "input",
           message: "What is the name of the role?",
-          name: "roleName"
+          name: "title"
         },
         {
           type: "input",
           message: "What is the salary for this role?",
-          name: "salaryTotal"
+          name: "salary"
         },
         {
           type: "list",
           message: "What is the department's name?",
-          name: "deptartmentsId",
+          name: "deptartments_id",
           choices: ['Sales', 'Engineering', 'Finance', 'Legal']
         }
       ])
@@ -141,18 +140,33 @@ function addRole() {
                 var dptID = 4;
             break;
           
-          };
-        })
-      .then(function(data) {
+          }
+      //     .then(function(data) {
   
   
-        connection.query("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [data.roleName, data.salaryTotal, dptId], function(err, res) {
-          if (err) throw err;
-          console.table(res);
-          startApp();
+      //       connection.query("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [data.title, data.salary, dptID], function(err, res) {
+      //         if (err) throw err;
+      //         console.table(res);
+      //         startApp();
+      //       });
+      //     });
+      // };
+          const updRole = "INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?);"
+          connection.query = updRole,
+          {
+            title: data.title,
+            salary: data.salary,
+            departments_id: dptID
+          } 
+          console.log(data);
+          function (err, res) {
+            if (err) throw err;
+            console.log(`added ${res.roles}to the roles`);
+            startApp()
+           };
         });
-      });
-  };
+      };
+    
   
   function addEmployee() {
     inquirer
