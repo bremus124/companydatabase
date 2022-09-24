@@ -100,47 +100,48 @@ const addDepartments = ()=> {
         .then(function(answer){
         connection.query("INSERT INTO departments (departments_name) VALUES (?)", [answer.departments_name] , function(err, res) {
         if (err) throw err;
-        console.log(`added ${res.departments}to the database`);
+        console.log(`added ${answer.departments_name} to the database`);
         startApp()
 })
 })
 };
 
-const addRole = () => {
-    inquirer.prompt([
-        {
-          type: "input",
-          message: "What is the name of the role?",
-          name: "title"
-        },
-        {
-          type: "input",
-          message: "What is the salary for this role?",
-          name: "salary"
-        },
-        {
-          type: "list",
-          message: "What is the department's name?",
-          name: "deptartments_id",
-          choices: ['Sales', 'Engineering', 'Finance', 'Legal']
-        }
-      ])
-      .then(data => {
-        switch(data.choice) {
-            case 'Sales':
-                var dptID = 1;
-            break;
-            case 'Engineering':
-                var dptID = 2;
-            break;
-            case 'Finance':
-                var dptID = 3;
-            break;
-            case 'Legal':
-                var dptID = 4;
-            break;
+
+// const addRole = () => {
+//     inquirer.prompt([
+//         {
+//           type: "input",
+//           message: "What is the name of the role?",
+//           name: "title"
+//         },
+//         {
+//           type: "input",
+//           message: "What is the salary for this role?",
+//           name: "salary"
+//         },
+//         {
+//           type: "list",
+//           message: "What is the department's name?",
+//           name: "deptartments_id",
+//           choices: ['Sales', 'Engineering', 'Finance', 'Legal']
+//         }
+//       ])
+//       .then(data => {
+//         switch(data.choice) {
+//             case 'Sales':
+//                 var dptID = 1;
+//             break;
+//             case 'Engineering':
+//                 var dptID = 2;
+//             break;
+//             case 'Finance':
+//                 var dptID = 3;
+//             break;
+//             case 'Legal':
+//                 var dptID = 4;
+//             break;
           
-          }
+//           };
       //     .then(function(data) {
   
   
@@ -151,21 +152,21 @@ const addRole = () => {
       //       });
       //     });
       // };
-          const updRole = "INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?);"
-          connection.query = updRole,
-          {
-            title: data.title,
-            salary: data.salary,
-            departments_id: dptID
-          } 
-          console.log(data);
-          function (err, res) {
-            if (err) throw err;
-            console.log(`added ${res.roles}to the roles`);
-            startApp()
-           };
-        });
-      };
+      //     const updRole = "INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?);"
+      //     connection.query = updRole,
+      //     {
+      //       title: data.title,
+      //       salary: data.salary,
+      //       departments_id: dptID
+      //     } 
+      //     console.log(data);
+      //     function (err, res) {
+      //       if (err) throw err;
+      //       console.log(`added ${res.roles}to the roles`);
+      //       startApp()
+      //      };
+      //   });
+      // };
     
   
   function addEmployee() {
