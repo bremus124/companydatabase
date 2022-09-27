@@ -93,7 +93,7 @@ const addDepartments = ()=> {
     inquirer.prompt([
         {
             type: 'input',
-            message: 'Enter the name of the departments',
+            message: 'Enter the name of the department',
             name: 'departments_name'
         }
     ])
@@ -106,68 +106,48 @@ const addDepartments = ()=> {
 })
 };
 
-
-// const addRole = () => {
-//     inquirer.prompt([
-//         {
-//           type: "input",
-//           message: "What is the name of the role?",
-//           name: "title"
-//         },
-//         {
-//           type: "input",
-//           message: "What is the salary for this role?",
-//           name: "salary"
-//         },
-//         {
-//           type: "list",
-//           message: "What is the department's name?",
-//           name: "deptartments_id",
-//           choices: ['Sales', 'Engineering', 'Finance', 'Legal']
-//         }
-//       ])
-//       .then(data => {
-//         switch(data.choice) {
-//             case 'Sales':
-//                 var dptID = 1;
-//             break;
-//             case 'Engineering':
-//                 var dptID = 2;
-//             break;
-//             case 'Finance':
-//                 var dptID = 3;
-//             break;
-//             case 'Legal':
-//                 var dptID = 4;
-//             break;
-          
-//           };
-      //     .then(function(data) {
-  
-  
-      //       connection.query("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [data.title, data.salary, dptID], function(err, res) {
-      //         if (err) throw err;
-      //         console.table(res);
-      //         startApp();
-      //       });
-      //     });
-      // };
-      //     const updRole = "INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?);"
-      //     connection.query = updRole,
-      //     {
-      //       title: data.title,
-      //       salary: data.salary,
-      //       departments_id: dptID
-      //     } 
-      //     console.log(data);
-      //     function (err, res) {
-      //       if (err) throw err;
-      //       console.log(`added ${res.roles}to the roles`);
-      //       startApp()
-      //      };
-      //   });
-      // };
-    
+const addRole = () => {
+  const departments = [];
+  connection.promise().query("SELECT departments.departments_name FROM departments;")
+  .then (([rows]) => {
+  for (row of rows){
+    departments.push(row.departments_name)
+  }
+    inquirer.prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "What is the name of the role?",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "What is the salary for this role?",
+        },
+        {
+          type: "list",
+          name: "departments_id",
+          message: "What is the department's name?",
+          choices: departments,
+        }
+      ])
+      .then((data) => {
+        const title = data.title;
+        const salary = data.salary;
+        let departments_id;
+        connection.promise().query(`SELECT id FROM departments WHERE departments_name = "${data.departments_id}";`)
+        .then(([rows])=> {
+          console.log(rows[0].id);
+          departments_id = rows[0].id;
+          connection.promise().execute("INSERT INTO roles (title, salary, departments_id) VALUES (?, ?, ?)", [title,salary, departments_id])
+          .then (() => {
+            startApp();
+          })
+                    
+        })
+      });
+    });
+  }
   
   function addEmployee() {
     inquirer
