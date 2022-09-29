@@ -149,9 +149,20 @@ const addRole = () => {
     });
   }
   
-  function addEmployee() {
-    inquirer
-      .prompt([
+const addEmployee = () => {
+  const employeeRoles = [];
+  connection.promise().query("SELECT roles.title FROM roles;")
+  .then (([rows]) => {
+  for (row of rows){
+    employeeRoles.push(row.title)
+  }
+  // const employeeManagers = [];
+  // connection.promise().query("SELECT employee.manager_id FROM employee;")
+  // .then (([mngrs]) => {
+  // for (row of mngrs){
+  //   employeeManagers.push(row.manager_id)
+  // }
+    inquirer.prompt([
         {
           type: "input",
           message: "What is the first name of the employee?",
@@ -166,50 +177,81 @@ const addRole = () => {
           type: "list",
           message: "What is the employee's role?",
           name: "rolesId",
-          choices: ['Sales Lead', 'Salesperson', 'Lead Engineering', 'Software Engieer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer']
+          choices: employeeRoles
         },
-        {
-          type: "list",
-          message: "Who is the employee's manager?",
-          name: "managerId",
-          choices: ['John Doe', 'Michael Chan', 'Ashley Rains', 'Kevin Tupik','Kunal Sing','Malia Brown', 'Sarah Lourd', 'Tom Allen']
+        // {
+        //   type: "list",
+        //   message: "Who is the employee's manager?",
+        //   name: "managerId",
+        //   choices: employeeManagers
           
-        }
+        // }
       ])
-      .then(function(answer) {
+      .then((data) => {
+        const eFirstName = data.eFirstName;
+        const eLastName = data.eLastName;
+        let rolesId;
+        connection.promise().query(`SELECT id FROM roles WHERE title = "${data.rolesId}";`)
+        .then(([rows])=> {
+          console.log(rows[0].id);
+          rolesId = rows[0].id;
+          connection.promise().execute("INSERT INTO employee (first_name, last_name, roles_id) VALUES (?, ?, ?);", [eFirstName, eLastName, rolesId])
+            
+            startApp();
+        
+          // let managerId;
+          
+          // connection.promise().query(`SELECT first_name FROM employee WHERE manager_id = "${data.managerId}";`)
+          // .then (([mngrs]) => {
+          //   managerId = mngrs[0].id;
+          //   connection.promise().execute("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?);", [eFirstName, eLastName, rolesId, managerId])
+            
+          //   startApp();
+          // })
+                    
+        // })
+      });
+    })
+  })
+}
+  //   });
+  // })};
+      
+      
+//       .then(function(answer) {
   
         
-        connection.query("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?)", [answer.eFirstName, answer.eLastName, answer.rolesId, answer.managerId], function(err, res) {
-          if (err) throw err;
-          console.table(res);
-          startApp();
-        });
-      });
-  }
+//         connection.query("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?)", [answer.eFirstName, answer.eLastName, answer.rolesId, answer.managerId], function(err, res) {
+//           if (err) throw err;
+//           console.table(res);
+//           startApp();
+//         });
+//       });
+//   }
   
-function updateEmployee() {
-        inquirer
-            .prompt([
-        {
-          type: "input",
-          message: "Which employee would you like to update?",
-          name: "eUpdate"
-        },
+// // function updateEmployee() {
+//         inquirer
+//             .prompt([
+//         {
+//           type: "input",
+//           message: "Which employee would you like to update?",
+//           name: "eUpdate"
+//         },
   
-        {
-          type: "input",
-          message: "What do you want to update to?",
-          name: "updateRoles"
-        }
-      ])
-      .then(function(answer) {
-        connection.query('UPDATE employee SET roles_id=? WHERE first_name= ?',[answer.updateRoles, answer.eUpdate],function(err, res) {
-          if (err) throw err;
-          console.table(res);
-          startApp();
-        });
-      });
-  }
+//         {
+//           type: "input",
+//           message: "What do you want to update to?",
+//           name: "updateRoles"
+//         }
+//       ])
+//       .then(function(answer) {
+//         connection.query('UPDATE employee SET roles_id=? WHERE first_name= ?',[answer.updateRoles, answer.eUpdate],function(err, res) {
+//           if (err) throw err;
+//           console.table(res);
+//           startApp();
+//         });
+//       });
+//   }
   
 const exitApp = () =>{
     process.exit();
