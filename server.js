@@ -23,6 +23,7 @@ const startApp = () => {
                 'Add Departments',
                 'Add Roles',
                 'Add Employee',
+                'Update Employee Role',
                 'Exit',
             ],
 
@@ -155,13 +156,16 @@ const addEmployee = () => {
   .then (([rows]) => {
   for (row of rows){
     employeeRoles.push(row.title)
-  }
-  // const employeeManagers = [];
-  // connection.promise().query("SELECT employee.manager_id FROM employee;")
-  // .then (([mngrs]) => {
-  // for (row of mngrs){
-  //   employeeManagers.push(row.manager_id)
-  // }
+  };
+
+  let currentManagers = [];
+  connection.promise().query('SELECT first_name, last_name FROM employee;')
+      .then(([rows]) => {
+          for (row of rows) {
+              currentManagers.push(row.first_name + " " + row.last_name);
+          }
+          currentManagers.unshift('None');
+
     inquirer.prompt([
         {
           type: "input",
@@ -179,13 +183,12 @@ const addEmployee = () => {
           name: "rolesId",
           choices: employeeRoles
         },
-        // {
-        //   type: "list",
-        //   message: "Who is the employee's manager?",
-        //   name: "managerId",
-        //   choices: employeeManagers
-          
-        // }
+        {
+          type: "list",
+          message: "Who is the employee's manager?",
+          name: "managerId",
+          choices: currentManagers
+        }
       ])
       .then((data) => {
         const eFirstName = data.eFirstName;
@@ -197,62 +200,74 @@ const addEmployee = () => {
           rolesId = rows[0].id;
           connection.promise().execute("INSERT INTO employee (first_name, last_name, roles_id) VALUES (?, ?, ?);", [eFirstName, eLastName, rolesId])
             
-            startApp();
-        
-          // let managerId;
-          
-          // connection.promise().query(`SELECT first_name FROM employee WHERE manager_id = "${data.managerId}";`)
-          // .then (([mngrs]) => {
-          //   managerId = mngrs[0].id;
-          //   connection.promise().execute("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?);", [eFirstName, eLastName, rolesId, managerId])
+          let manager = data.managerId.split(" ");
+          let managerId;
+          connection.promise().query('SELECT id FROM employee WHERE first_name =' + "'" + manager[0] + "'" + ' AND last_name =' + "'" + manager[1] + "'" + ';')
+          .then (([mngrs]) => {
+            managerId = mngrs[0].id;
+            connection.promise().execute("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?);", [eFirstName, eLastName, rolesId, managerId])
             
-          //   startApp();
-          // })
+            startApp();
+          })
                     
-        // })
+        })
       });
     })
   })
+}  
+function updateEmployee() {
+    const dataDpt = 'SELECT CONCAT(employee.first_name, " ", employee.last_name) AS "Employee" FROM employee;'
+    connection.promise().query(dataDpt) 
+    .then (([rows]) => {
+      let Employees = [];
+      for (row of rows) {
+        Employees.push(row.Employee)
+      };
+    const dataRoles = 'SELECT title FROM roles;'
+    connection.promise().query(dataRoles) 
+    .then (([rows]) => {
+      let roles = [];
+      for (row of rows) {
+        roles.push(row.title)
+      }
+        inquirer
+            .prompt([
+        {
+          type: "list",
+          message: "Which employee would you like to update?",
+          name: "eUpdate",
+          choices: Employees
+        },
+  
+        {
+          type: "list",
+          message: "What do you want to update to?",
+          name: "updateRoles",
+          choices: roles
+        }
+      ])
+      .then(function(answer) {
+        connection.promise().query('SELECT id FROM roles WHERE title="' + answer.updateRoles + '";')
+        .then(([rows]) => {
+          console.log(rows);
+            let roles_id = rows[0].id
+            let employeeId;
+            let eName = answer.eUpdate.split (' ')
+            connection.promise().query('SELECT id FROM employee WHERE first_name =' + "'" + eName[0] + "'" + ' AND last_name =' + "'" + eName[1] + "'" + ';')
+            .then(([rows]) => {
+              employeeId=rows[0].id
+              connection.query('UPDATE employee SET roles_id=? WHERE id= ?',[roles_id, employeeId],function(err, res) {
+                if (err) throw err;
+                console.table(res);
+                startApp();
+              })
+          })
+        });
+      });
+  })
+})
 }
-  //   });
-  // })};
-      
-      
-//       .then(function(answer) {
-  
-        
-//         connection.query("INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?)", [answer.eFirstName, answer.eLastName, answer.rolesId, answer.managerId], function(err, res) {
-//           if (err) throw err;
-//           console.table(res);
-//           startApp();
-//         });
-//       });
-//   }
-  
-// // function updateEmployee() {
-//         inquirer
-//             .prompt([
-//         {
-//           type: "input",
-//           message: "Which employee would you like to update?",
-//           name: "eUpdate"
-//         },
-  
-//         {
-//           type: "input",
-//           message: "What do you want to update to?",
-//           name: "updateRoles"
-//         }
-//       ])
-//       .then(function(answer) {
-//         connection.query('UPDATE employee SET roles_id=? WHERE first_name= ?',[answer.updateRoles, answer.eUpdate],function(err, res) {
-//           if (err) throw err;
-//           console.table(res);
-//           startApp();
-//         });
-//       });
-//   }
-  
+
 const exitApp = () =>{
     process.exit();
 }
