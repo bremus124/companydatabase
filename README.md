@@ -9,11 +9,11 @@
 ## Screenshot
 
 ![Screenshot](screenshot1.png)
-![Screenshot](screenshot2.png)
+
 --
 
 ## Deployment
 
 - To deploy this project run:
-  - Website:
   - Repository: https://github.com/bremus124/companydatabase
+    -Video: https://drive.google.com/file/d/1a17KMKoBBxUqMh-tTaG_oAsB8D-SEBz0/view
