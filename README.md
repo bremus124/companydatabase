@@ -16,4 +16,4 @@
 
 - To deploy this project run:
   - Repository: https://github.com/bremus124/companydatabase
-    -Video: https://drive.google.com/file/d/1a17KMKoBBxUqMh-tTaG_oAsB8D-SEBz0/view
+  - Video: https://drive.google.com/file/d/1a17KMKoBBxUqMh-tTaG_oAsB8D-SEBz0/view
